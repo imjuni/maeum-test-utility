@@ -42,9 +42,7 @@
     "moduleResolution": "Node16" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
     "moduleDetection": "force",
     "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
-    "paths": {
-      "#modules/*": ["src/modules/*"]
-    },
+    "paths": {},
     "rootDir": ".",
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
 

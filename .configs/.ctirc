@@ -1,0 +1,6 @@
+{
+  "project": "tsconfig.prod.json",
+  "overwrite": true,
+  "noBackup": true,
+  "output": "src"
+}

@@ -23,6 +23,43 @@ task('clean', async () => {
   });
 });
 
+task('clean:dts', async () => {
+  const cmd = 'rimraf';
+  const option = 'dist/cjs/src dist/esm/src';
+
+  logger.info(cmd, option);
+
+  await execa(cmd, splitArgs(option), {
+    stderr: process.stderr,
+    stdout: process.stdout,
+  });
+});
+
+task('ctix:single', async () => {
+  const cmd = 'ctix';
+  const option =
+    'single -p ./tsconfig.prod.json --config ./.configs/.ctirc -g ./.configs/.ctiignore';
+
+  logger.info('Create index file : ', cmd, option);
+
+  await execa(cmd, splitArgs(option), {
+    stderr: process.stderr,
+    stdout: process.stdout,
+  });
+});
+
+task('ctix:remove', async () => {
+  const cmd = 'ctix';
+  const option = 'remove -p ./tsconfig.json --config ./.configs/.ctirc -g ./.configs/.ctiignore';
+
+  logger.info('Remove index file : ', cmd, option);
+
+  await execa(cmd, splitArgs(option), {
+    stderr: process.stderr,
+    stdout: process.stdout,
+  });
+});
+
 task('+rollup:dev', async () => {
   const cmd = 'rollup';
   const option = '--config ./.configs/rollup.config.dev.ts --configPlugin typescript';
@@ -89,7 +126,7 @@ task('+pub', async () => {
 
 task('+pub:prod', async () => {
   const cmd = 'npm';
-  const option = 'publish';
+  const option = 'publish --access=public';
 
   await execa(cmd, splitArgs(option), {
     env: {
@@ -118,9 +155,9 @@ task('+unpub', async () => {
   });
 });
 
-task('rollup:prod', series('clean', '+rollup:prod'));
-task('rollup:dev', series('clean', '+rollup:dev'));
+task('rollup:prod', series('clean', 'ctix:single', '+rollup:prod', 'ctix:remove', 'clean:dts'));
+task('rollup:dev', series('clean', 'ctix:single', '+rollup:dev', 'ctix:remove', 'clean:dts'));
 task('build', series('clean', '+build'));
-task('pub', series('clean', '+rollup:prod', '+pub'));
+task('pub', series('rollup:prod', '+pub'));
 task('unpub', series('clean', '+unpub'));
-task('pub:prod', series('clean', '+rollup:prod', '+pub:prod'));
+task('pub:prod', series('rollup:prod', '+pub:prod'));
